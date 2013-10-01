@@ -1,0 +1,64 @@
+#
+#   Protect .htaccess file
+#
+<files .htaccess>
+order allow,deny
+deny from all
+</files>
+
+#
+#   Disable directory browsing
+#
+Options All -Indexes
+
+#   TIP: check out these header settings with curl -I <url> (fetches headers only).
+#
+#   This section sets up the cacheing for various types of files (in secs).
+#   http://www.askapache.com/hacking/speed-site-caching-cache-control.html
+#
+# # 480 weeks
+# <filesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|js|css|swf)$">
+# Header set Cache-Control "max-age=290304000, public"
+# </filesMatch>
+#  
+# # 2 DAYS
+# <filesMatch "\.(xml|txt)$">
+# Header set Cache-Control "max-age=172800, public, must-revalidate"
+# </filesMatch>
+#  
+# # 2 HOURS = 60*60*2 = 7200
+# # 1 MINUTE = 60
+# <filesMatch "\.(html|htm|appcache)$">
+# Header set Cache-Control "max-age=60, must-revalidate"
+# </filesMatch>
+
+
+#
+#   Remove ETags to improve performance
+#   http://developer.yahoo.com/performance/rules.html#etags
+#
+FileETag none
+
+# 404 page 
+ErrorDocument 404 /404.html
+
+#
+#   WordPress - redirect everything (that doesn’t exist) to index.php
+#
+# <IfModule mod_rewrite.c>
+# RewriteEngine On
+# RewriteBase /
+# RewriteRule ^index\.php$ - [L]
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule . /index.php [L]
+# </IfModule>
+
+#
+# Disable hotlinking of images and replace them with error image
+#
+# RewriteEngine on
+# RewriteCond %{HTTP_REFERER} !^$
+# RewriteCond %{HTTP_REFERER} !^http://(www\.)?yourdomain.com/.*$ [NC]
+# RewriteRule \.(gif|jpg|png)$ – [F]
+# RewriteRule \.(gif|jpg|png)$ http://www.yourdomain.com/error_image.gif [R,L]
